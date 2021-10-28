@@ -12,7 +12,7 @@
         let count = 0;
         let totalPage = 0;
 
-        successHandler();
+        getAll();
 
 
         function clear() {
@@ -21,32 +21,32 @@
             $("#content").val("")
         }
 
-        function successHandler() {
+        function getAll() {
             $.ajax({
                 url: URL,
                 type: 'GET',
                 success: function (data) {
                     let content = '<thead>\n ' +
                         '<tr>\n' +
-                        '<td scope="col">Id</td>\n' +
-                        '<td scope="col">Author</td>\n' +
-                        '<td scope="col">Title</td>\n' +
-                        '<td scope="col">Content</td>\n' +
-                        '<td scope="col">Action</td>\n' +
+                        '<th scope="col">Id</th>\n' +
+                        '<th scope="col">Author</th>\n' +
+                        '<th scope="col">Title</th>\n' +
+                        '<th scope="col">Content</th>\n' +
+                        '<th scope="col">Action</th>\n' +
                         '</tr>' +
                         '</thead>';
                     for (let i = 0; i < data.content.length; i++) {
                         content += getBlog(data.content[i])
                     }
-                    totalPage =  data.totalPages;
-                    $("#countPage").html(page+1)
+                    totalPage = data.totalPages;
+                    $("#countPage").html(page + 1)
                     $("#list").html(content);
                 }
             })
         }
 
         function getBlog(blog) {
-            return      `
+            return `
                 <tr>
                     <th scope="row">${blog.id}</th>
                     <td>${blog.author}</td>
@@ -57,20 +57,23 @@
                         <button onclick="showDelete(${blog.id})" class="btn btn-outline-danger">Delete</button></td>
                 </tr>`
         }
+
         function searchBlog() {
-            let name = $("#form1").val()
+            let name = $("#form1").val();
             $.ajax({
+
                 url: `${URL}?q=${name}`,
                 type: 'GET',
                 data: name,
                 success: function (data) {
+
                     let content = '<thead>\n ' +
                         '<tr>\n' +
-                        '<td scope="col">Id</td>\n' +
-                        '<td scope="col">Author</td>\n' +
-                        '<td scope="col">Title</td>\n' +
-                        '<td scope="col">Content</td>\n' +
-                        '<td scope="col">Action</td>\n' +
+                        '<th scope="col">Id</th>\n' +
+                        '<th scope="col">Author</th>\n' +
+                        '<th scope="col">Title</th>\n' +
+                        '<th scope="col">Content</th>\n' +
+                        '<th scope="col">Action</th>\n' +
                         '</tr>' +
                         '</thead>';
                     for (let i = 0; i < data.content.length; i++) {
@@ -117,7 +120,7 @@
                 url: URL,
                 data: JSON.stringify(newBlog),
                 success: function () {
-                    successHandler();
+                    getAll();
                     clear();
                 }
             });
@@ -143,9 +146,10 @@
                 type: "PUT",
                 url: URL + `/` + id,
                 data: JSON.stringify(blogUpdate),
-                success: successHandler
+                success: getAll
             });
         }
+
         function showDelete(id) {
             let myModal = new bootstrap.Modal(document.getElementById('deleteBlog'));
             myModal.show();
@@ -160,31 +164,32 @@
                 }
             });
         }
+
         function remove(id) {
             $.ajax({
                 type: "DELETE",
                 url: URL + `/${id}`,
-                success: successHandler
+                success: getAll
             });
         }
 
         function nextPage() {
             page++
-            if(page === totalPage -1){
-                $("#next-btn").hide();
+            if(page === totalPage - 1 ) {
+                $('#next-btn').prop('disabled', true);
             }
-            $("#countPage").html(page+1)
+            $("#countPage").html(page + 1)
             $.ajax({
-                type:"GET",
-                url:URL+`?page=${page}`,
-                success: function (data){
+                type: "GET",
+                url: URL + `?page=${page}`,
+                success: function (data) {
                     let content = '<thead>\n ' +
                         '<tr>\n' +
-                        '<td scope="col">Id</td>\n' +
-                        '<td scope="col">Author</td>\n' +
-                        '<td scope="col">Title</td>\n' +
-                        '<td scope="col">Content</td>\n' +
-                        '<td scope="col">Action</td>\n' +
+                        '<th scope="col">Id</th>\n' +
+                        '<th scope="col">Author</th>\n' +
+                        '<th scope="col">Title</th>\n' +
+                        '<th scope="col">Content</th>\n' +
+                        '<th scope="col">Action</th>\n' +
                         '</tr>' +
                         '</thead>';
                     for (let i = 0; i < data.content.length; i++) {
@@ -194,26 +199,27 @@
                 }
             });
         }
+
         function previousPage() {
-            if (page > 0){
+            if (page > 0) {
                 page--;
                 $("#next-btn").show();
             }
-            if (page === 1){
+            if (page === 1) {
                 $("#pre-btn").hide();
             }
-            $("#countPage").html(page+1)
+            $("#countPage").html(page + 1)
             $.ajax({
-                type:"GET",
-                url:URL+`?page=${page}`,
-                success: function (data){
+                type: "GET",
+                url: URL + `?page=${page}`,
+                success: function (data) {
                     let content = '<thead>\n ' +
                         '<tr>\n' +
-                        '<td scope="col">Id</td>\n' +
-                        '<td scope="col">Author</td>\n' +
-                        '<td scope="col">Title</td>\n' +
-                        '<td scope="col">Content</td>\n' +
-                        '<td scope="col">Action</td>\n' +
+                        '<th scope="col">Id</th>\n' +
+                        '<th scope="col">Author</th>\n' +
+                        '<th scope="col">Title</th>\n' +
+                        '<th scope="col">Content</th>\n' +
+                        '<th scope="col">Action</th>\n' +
                         '</tr>' +
                         '</thead>';
                     for (let i = 0; i < data.content.length; i++) {
@@ -223,20 +229,26 @@
                 }
             });
         }
+
+        $(document).ready(function () {
+            $("#form1").keypress(function (event) {
+                if (event.keyCode === 13) {
+                    $("#search").click();
+                }
+            });
+        })
     </script>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="col-3">
-            <form>
-                <div class="input-group">
-                    <button type="button" class="btn btn-primary" onclick="searchBlog()">
-                        Search
-                    </button>
-                    <input type="search" id="form1" class="form-control" name="q"/>
-                </div>
-            </form>
+            <div class="input-group">
+                <button type="button" class="btn btn-primary" onclick="searchBlog()" id="search">
+                    Search
+                </button>
+                <input type="search" id="form1" class="form-control" name="q"/>
+            </div>
         </div>
         <div class="col-8"></div>
         <div class="col-1">
@@ -283,13 +295,21 @@
         </table>
         <div class="col-10"></div>
         <div class="col-2">
-            <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-                <div class="btn-group" role="group" aria-label="First group">
-                    <button type="button" class="btn btn-outline-secondary" onclick="previousPage()" id="pre-btn">Previous</button>
-                    <button type="button" class="btn btn-outline-secondary"  id="countPage"></button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="nextPage()" id="next-btn">NEXT</button>
-                </div>
-            </div>
+            <nav aria-label="..." id="page">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <input type="button" class="page-link" onclick="previousPage()" id="pre-btn" value="Previous"/>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <button type="button" class="page-link" onclick="nextPage()" id="next-btn">Next</button>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
